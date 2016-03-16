@@ -1,0 +1,22 @@
+import petstore.structure.*
+import petstore.scenarios.*
+
+test defaultProductTest activity DefaultProductActivity{
+	
+	assertOrder *, DefaultProductActivity.setAvailable;
+	
+	assertState always after action DefaultProductActivity.setAvailable{
+		
+		check 'NonExistingConstraint', 'ProductSize', 'ProductSize2', 'ProductSize3', 'ProductSize4', 'ProductSize5', 'ProductSize6', 
+		'ProductSize7', 'ProductSize8', 'ProductNameStringEquality', 'ProductNameStringInequality', 'ProductNameStringLenght', 'ProductNameConcat', 
+		'ProductCode', 'ProductCode2', 'ProductCode3', 'ProductCode4', 'ProductCode5', 'ProductCode6', 'ProductAvailable', 'ProductAvailable2', 'ProductFinalState',
+		'ProductFinalState2', 'ProductFinalState3', 'MalformedInvariant', 'MalformedInvariant2', 'MalformedInvariant3', 'MalformedInvariant4';
+
+		/**
+		 * PROBLEM WITH THREADS
+		 * 'ProductNameStringToLower', 'ProductNameStringToLower3', 'ProductNameStringToLower2', 
+		 * 'ProductNameStringToUpper', 'ProductNameStringToUpper3', 'ProductNameStringToUpper2',
+		 * 'ProductNameSubstring', 'ProductNameSubstring2', 'ProductNameSubstring3'
+		 */		
+	}
+}

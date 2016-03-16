@@ -1,0 +1,27 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test newCartItemTest activity NewCartItemActivity(catalogItem=TestData.item, quantity=10){
+	var cartItem = cartItem;
+	
+	assertOrder NewCartItemActivity.init, NewCartItemActivity.createCartItem, 
+		NewCartItemActivity.setItem, NewCartItemActivity.setQuantity;
+	
+	assertState always until action NewCartItemActivity.createCartItem{cartItem = null;}
+	assertState immediately until action NewCartItemActivity.createCartItem{cartItem = null;}
+	assertState always after action NewCartItemActivity.createCartItem{cartItem != null;}
+	assertState immediately after action NewCartItemActivity.createCartItem{cartItem != null;}
+	
+	assertState always until action NewCartItemActivity.setItem{cartItem::item = null;}
+	assertState immediately until action NewCartItemActivity.setItem{cartItem::item = null;}
+	assertState always after action NewCartItemActivity.setItem{cartItem::item != null;}
+	assertState immediately after action NewCartItemActivity.setItem{cartItem::item != null;}
+}

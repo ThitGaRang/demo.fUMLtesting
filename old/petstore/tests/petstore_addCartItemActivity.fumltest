@@ -1,0 +1,19 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test addCartItemTest activity AddCartItemActivity(item=TestData.item, quantity=100) on TestData.cart{
+	var cartItem = initCartItem.result;
+	
+	assertOrder AddCartItemActivity.init, AddCartItemActivity.self, AddCartItemActivity.createCartItem, 
+		AddCartItemActivity.initCartItem, AddCartItemActivity.addCartItem;
+		
+	assertState always after action AddCartItemActivity.addCartItem{cartItem::item = TestData.item;}
+}

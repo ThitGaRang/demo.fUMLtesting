@@ -1,0 +1,38 @@
+package structure
+
+context Product
+
+inv ProductNotCreated: Product.allInstances()->size() = 0
+inv ProductCreated: Product.allInstances()->size() > 0
+inv NumberOfProducts: Product.allInstances()->size() = 1
+
+inv ProductName: name = 'testProduct'
+inv ProductCode: code = 12345
+inv ProductAvailable: available = not false
+
+inv ProductNameNotSet: name = null
+inv ProductCodeNotSet: code = null
+inv ProductAvailableNotSet: available = null
+
+inv Strange: ((name.size() * 2) - 2 ) / 20 = 1
+inv ProductNameForAll: Product.allInstances()->forAll(name='testProduct')
+
+context Item
+
+inv ItemNotCreated: Item.allInstances()->size() = 0
+inv ItemCreated: Item.allInstances()->size() > 0
+inv NumberOfItems: Item.allInstances()->size() = 1
+
+inv NumberOfItemsWithExisting: Item.allInstances()->size() = 2
+
+inv ItemNumber: number = 12345
+inv ItemUnitCost: unitCost = 250
+inv ItemQuantity: quantity = 5
+inv ItemProduct: product <> null
+
+inv ItemNumberNotSet: number = null
+inv ItemUnitCostNotSet: unitCost = null
+inv ItemQuantityNotSet: quantity = null
+inv ItemProductNotSet: product = null
+
+endpackage

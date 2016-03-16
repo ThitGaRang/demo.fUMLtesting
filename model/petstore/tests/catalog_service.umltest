@@ -1,0 +1,62 @@
+import petstore.data.*
+import petstore.logic.*
+
+scenario TestData[
+	object catalogServiceTD: CatalogService{}
+	
+	object customerTD: Customer{
+		Customer.firstname='user'; 
+		Customer.lastname='userLastName';
+		Customer.email='user@test.com';
+		Customer.login='user';
+		Customer.password='password';
+	}
+	
+	object productTD: Product{
+		Product.name = 'product';
+		Product.description = 'A product for testing.';
+	}
+	
+	object itemTD: Item{
+		Item.name = 'item';
+		Item.unitCost = 10;
+		Item.description = 'An item used for testing.';
+	}
+	
+	object anotherItemTD: Item{
+		Item.name = 'anotherItem';
+		Item.unitCost = 20;
+		Item.description = 'An other item used for testing.';
+	}
+]
+
+test findAllItemsTest activity CatalogService.FindAllItems{
+	initialize TestData;
+	assertOrder CatalogService.FindAllItems.init, *;
+	finally{
+		CatalogService.FindAllItems.items includes TestData.itemTD;
+		CatalogService.FindAllItems.items includes TestData.anotherItemTD;
+		check 'itemSize';
+	}
+}
+
+test findAllProductsTest activity CatalogService.FindAllProducts{
+	assertOrder CatalogService.FindAllProducts.init, CatalogService.FindAllProducts.retrieveProducts;
+	finally{
+		CatalogService.FindAllProducts.products includes TestData.productTD;
+		check 'productSize';
+	}
+}
+
+test findItemTest activity CatalogService.FindItem(CatalogService.FindItem.name='item') on TestData.catalogServiceTD{
+	initialize TestData;
+	finally{
+		CatalogService.FindItem.item = TestData.itemTD;
+	}
+}
+
+test findItemTestFail activity CatalogService.FindItem(CatalogService.FindItem.name='nonExistingItem') on TestData.catalogServiceTD{
+	finally{
+		CatalogService.FindItem.item = null;
+	}
+}

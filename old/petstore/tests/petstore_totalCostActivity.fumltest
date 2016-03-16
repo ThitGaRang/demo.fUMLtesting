@@ -1,0 +1,37 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test totalCostTest activity TotalCostActivity on TestData.cartItem{
+	var cost = totalCost;
+	var cartItem = totalCostSelf.result;
+	var unitCost = getUnitCost.unitCost;
+	var quantity = getQuantity.result;
+	
+	assertOrder TotalCostActivity.initial, TotalCostActivity.totalCostSelf, *, TotalCostActivity.calculateTotalCost;
+	
+	assertState always until action TotalCostActivity.totalCostSelf{cartItem = null;}
+	assertState immediately until action TotalCostActivity.totalCostSelf{cartItem = null;}
+	assertState always after action TotalCostActivity.totalCostSelf{cartItem != null;}
+	assertState immediately after action TotalCostActivity.totalCostSelf{cartItem != null;}
+	
+	assertState always until action TotalCostActivity.getUnitCost{cartItem != null; unitCost = 100;}
+	assertState immediately until action TotalCostActivity.getUnitCost{cartItem != null; unitCost = 100;}
+	assertState always after action TotalCostActivity.getUnitCost{cartItem != null; unitCost = 100;}
+	assertState immediately after action TotalCostActivity.getUnitCost{cartItem != null; unitCost = 100;}
+	
+	assertState always until action TotalCostActivity.getQuantity{cartItem != null; quantity = null;}
+	assertState immediately until action TotalCostActivity.getQuantity{cartItem != null; quantity = null;}
+	assertState always after action TotalCostActivity.getQuantity{cartItem != null; quantity = 5;}
+	assertState immediately after action TotalCostActivity.getQuantity{cartItem != null; quantity = 5;}
+	
+	assertState always after action TotalCostActivity.calculateTotalCost{unitCost = 100; quantity = 5; cost = 500;}
+	assertState immediately after action TotalCostActivity.calculateTotalCost{unitCost = 100; quantity = 5; cost = 500;}
+}

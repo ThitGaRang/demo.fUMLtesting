@@ -1,0 +1,20 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{name='hello';}
+	object product2: Product{name='hello2';}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test newItemTest activity NewItemActivity(product=TestData.product){
+	var item = item;
+	
+	assertState always after action NewItemActivity.setProduct{
+		item::product = TestData.product;
+		check 'ProductSet' on item;
+	}
+}

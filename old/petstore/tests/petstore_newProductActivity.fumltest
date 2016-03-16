@@ -1,0 +1,33 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test newProductTest activity NewProductActivity(name="SyrianHamster", code=1234) on TestData.product{	
+	var product = product;
+	
+	assertOrder *, NewProductActivity.createProduct, *, NewProductActivity.setName, *, NewProductActivity.setDescription, *,
+		NewProductActivity.setAvailable, *, NewProductActivity.setCode;
+	
+	assertState always until action NewProductActivity.createProduct{product = null;}
+	assertState immediately until action NewProductActivity.createProduct{product = null;}
+	assertState always after action NewProductActivity.createProduct{product != null;}
+	assertState immediately after action NewProductActivity.createProduct{product != null;}
+	
+	assertState always after action NewProductActivity.setName{product::name = "SyrianHamster";}
+	assertState immediately after action NewProductActivity.setName{product::name = "SyrianHamster";}		
+	assertState always until action NewProductActivity.setName{product::name = null;}	
+	assertState immediately until action NewProductActivity.setName{product::name = null;}
+	
+	finally {
+		check 'ProductName', 'ProductCode' on product;
+		product::name = 'SyrianHamster';		
+		product::code = 1234;
+	}
+} 

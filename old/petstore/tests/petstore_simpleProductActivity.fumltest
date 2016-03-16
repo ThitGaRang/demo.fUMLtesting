@@ -1,0 +1,29 @@
+import petstore.structure.*
+import petstore.behavior.*
+
+scenario TestData[
+	object cart : Cart{}
+	object product : Product{}
+	object item : Item{unitCost = 100;}
+	object cartItem : CartItem{quantity=5;}
+	link cartItem_item{source cartItem=cartItem; target item=item;}
+]
+
+test simpleProductTest activity petstore.scenarios.SimpleProductActivity{
+	var product = product;
+	
+	assertOrder *, SimpleProductActivity.newProduct(*, NewProductActivity.setCode);
+	
+	assertState always after action SimpleProductActivity.codeValue{
+		product::code = 1234;
+	}
+	
+	assertState always after constraint 'ProductSize'{
+		check 'ProductName' on product;
+	}	
+	
+	finally{
+		check 'ProductSize';		
+		check 'ProductName' on product;
+	}
+}
